@@ -1,14 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { 
-  Zap, 
-  Shield, 
-  BarChart3, 
-  Globe, 
-  Cpu, 
-  Rocket 
+import {
+  Globe,
+  Zap,
+  Rocket,
+  Cpu,
+  BarChart3,
+  Shield,
 } from "lucide-react";
+import { Card, GradientText } from "@/components/ui";
 
 const features = [
   {
@@ -61,22 +62,24 @@ export default function Features() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center text-center mb-20">
           <h2 className="text-primary font-bold tracking-widest uppercase text-sm mb-4">
-            Our Expertise
+            Our Services
           </h2>
           <h3 className="text-4xl md:text-5xl font-bold mb-6">
-            Solutions that Drive <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Value</span>
+            Solutions that Drive <GradientText>Results</GradientText>
           </h3>
           <p className="text-foreground/60 max-w-2xl text-lg">
-            We deliver a comprehensive suite of services designed to address the unique 
-            demands of modern enterprise environments.
+            From bold branding to precision fabrication, we deliver a full suite
+            of services built to set your business apart.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, idx) => (
-            <div 
+            <Card
               key={idx}
-              className="group glass flex flex-col rounded-[2.5rem] border-border/50 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden"
+              radius="4xl"
+              hoverable
+              className="group flex flex-col overflow-hidden"
             >
               {/* Image Header */}
               <div className="relative h-48 w-full overflow-hidden">
@@ -98,11 +101,11 @@ export default function Features() {
                   {feature.desc}
                 </p>
                 <div className="mt-8 flex items-center gap-2 text-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  Learn more 
+                  Learn more
                   <div className="w-4 h-px bg-primary group-hover:w-8 transition-all" />
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

@@ -1,24 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #07090f;   /* Near-black navy */
-  --foreground: #e8eaf0;   /* Soft cool white */
-  --primary: #13b5d3;      /* Exceed Cyan */
-  --secondary: #6366f1;    /* Exceed Purple/Indigo */
-  --accent: #0f1623;       /* Deep navy card surface */
-  --border: #1e2a3a;       /* Subtle dark border */
-  --card: #0d1420;         /* Card background */
+  /* Base */
+  --background: #f8fafc;
+  --foreground: #0d1420;
+
+  /* Brand */
+  --primary: #13b5d3;
+  --primary-hover: #0fa3bf;
+  --secondary: #6366f1;
+  --secondary-hover: #5254d4;
+
+  /* Surfaces */
+  --accent: #eef2f7;
+  --card: #ffffff;
+  --border: #d1dde9;
+
+  /* Muted */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  /* Status */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
   --color-accent: var(--accent);
+  --color-card: var(--card);
   --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-playfair-display);
 }
 
 /* Dark theme is now the default — no media query override needed */
@@ -34,11 +58,24 @@ body {
   overflow-x: hidden;
 }
 
+h1, h2, h3 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
 .glass {
-  background: rgba(13, 20, 32, 0.85);
+  background: rgba(255, 255, 255, 0.80);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(19, 181, 211, 0.12);
+  border: 1px solid rgba(19, 181, 211, 0.18);
+}
+
+.glow-primary {
+  box-shadow: 0 0 40px rgba(19, 181, 211, 0.18), 0 20px 60px rgba(19, 181, 211, 0.12);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.18), 0 20px 60px rgba(99, 102, 241, 0.12);
 }
 
 .bg-grid {

@@ -7,6 +7,7 @@ import {
   Mail,
   ArrowUpRight
 } from "lucide-react";
+import { Button, Card, Input } from "@/components/ui";
 
 export default function Footer() {
   return (
@@ -74,22 +75,27 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* <div className="glass p-8 rounded-3xl border-border/50">
+          <Card className="p-8">
             <h5 className="font-bold mb-4 text-lg">Newsletter</h5>
             <p className="text-xs text-foreground/50 mb-6">
-              Get the latest portfolio updates and announcements delivered to your inbox.
+              Get the latest updates and announcements delivered to your inbox.
             </p>
             <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="email@example.com" 
-                className="bg-background border border-border px-4 py-3 rounded-xl text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all ml-0"
+              <Input
+                type="email"
+                placeholder="email@example.com"
+                aria-label="Email address"
               />
-              <button className="bg-foreground text-background font-bold py-3 rounded-xl text-xs hover:bg-foreground/90 transition-all">
+              <Button
+                type="submit"
+                variant="outline"
+                size="sm"
+                className="w-full rounded-xl justify-center py-3"
+              >
                 Subscribe
-              </button>
+              </Button>
             </form>
-          </div> */}
+          </Card>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-border/50 gap-6">
