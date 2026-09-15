@@ -4,3 +4,4 @@ export { Card } from "./card";
 export { Input } from "./input";
 export { Section, Container } from "./section";
 export { GradientText } from "./gradient-text";
+export { Reveal } from "./reveal";

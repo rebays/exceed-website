@@ -2,23 +2,23 @@
 
 :root {
   /* Base */
-  --background: #f8fafc;
-  --foreground: #0d1420;
+  --background: #0a0e13;
+  --foreground: #eef3f6;
 
-  /* Brand */
-  --primary: #13b5d3;
-  --primary-hover: #0fa3bf;
-  --secondary: #6366f1;
-  --secondary-hover: #5254d4;
+  /* Brand — sampled from the Exceed logo (teal wordmark, blue-violet "X") */
+  --primary: #0cb0d0;
+  --primary-hover: #0e97b3;
+  --secondary: #5072e7;
+  --secondary-hover: #6b89ec;
 
   /* Surfaces */
-  --accent: #eef2f7;
-  --card: #ffffff;
-  --border: #d1dde9;
+  --accent: #10161d;
+  --card: #0d1319;
+  --border: #1e2a34;
 
   /* Muted */
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: #131b22;
+  --muted-foreground: #8b98a3;
 
   /* Status */
   --success: #22c55e;
@@ -42,7 +42,7 @@
   --color-warning: var(--warning);
   --color-error: var(--error);
   --font-sans: var(--font-dm-sans);
-  --font-display: var(--font-playfair-display);
+  --font-display: var(--font-anton);
 }
 
 /* Dark theme is now the default — no media query override needed */
@@ -60,26 +60,44 @@ body {
 
 h1, h2, h3 {
   font-family: var(--font-display), system-ui, sans-serif;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 0.95;
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.80);
+  background: rgba(20, 19, 18, 0.72);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(19, 181, 211, 0.18);
+  border: 1px solid rgba(239, 232, 220, 0.1);
 }
 
 .glow-primary {
-  box-shadow: 0 0 40px rgba(19, 181, 211, 0.18), 0 20px 60px rgba(19, 181, 211, 0.12);
+  box-shadow: 0 0 40px rgba(12, 176, 208, 0.18), 0 20px 60px rgba(12, 176, 208, 0.12);
 }
 
 .glow-secondary {
-  box-shadow: 0 0 40px rgba(99, 102, 241, 0.18), 0 20px 60px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 40px rgba(80, 114, 231, 0.16), 0 20px 60px rgba(80, 114, 231, 0.1);
+}
+
+.text-gradient-brand {
+  background: linear-gradient(120deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
 
 .bg-grid {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40' fill='%23e2e8f0' fill-opacity='0.1'%3E%3C/path%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40' fill='%23eef3f6' fill-opacity='0.08'%3E%3C/path%3E%3C/svg%3E");
 }
 
 @keyframes pulse-slow {
@@ -108,4 +126,13 @@ h1, h2, h3 {
 
 .animate-bounce-slow {
   animation: bounce-slow 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
