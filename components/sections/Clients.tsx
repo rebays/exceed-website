@@ -1,7 +1,7 @@
 import { Marquee } from "@/components/Marquee";
 import { Reveal } from "@/components/ui";
 
-const partners = ["ORG CLINIC", "REBAYS", "SIG", "GOLS"];
+const partners = ["ORG CLINIC", "REBAYS","OVO"];
 
 export default function Clients() {
   return (

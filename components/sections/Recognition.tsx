@@ -1,7 +1,7 @@
 import { Reveal } from "@/components/ui";
 
 const stats = [
-  { label: "Founded", value: "2015" },
+  { label: "Founded", value: "2022" },
   { label: "Regional Offices", value: "8" },
   { label: "Enterprise Clients", value: "150+" },
   { label: "Industry Awards", value: "24" },

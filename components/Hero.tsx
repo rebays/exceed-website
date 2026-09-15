@@ -35,7 +35,7 @@ export default function Hero() {
           </div>
 
           <div className="text-right">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-secondary mb-4">EST. 2015</p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-secondary mb-4">EST. 2022</p>
             <div className="flex flex-col gap-1">
               {tags.map((tag) => (
                 <span key={tag} className="text-xl md:text-2xl text-foreground/80 font-display">
