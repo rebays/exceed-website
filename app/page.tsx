@@ -7,7 +7,6 @@ import Recognition from "@/components/sections/Recognition";
 import Process from "@/components/sections/Process";
 import Founder from "@/components/sections/Founder";
 import Pricing from "@/components/sections/Pricing";
-import Team from "@/components/sections/Team";
 import FAQ from "@/components/sections/FAQ";
 import { Reveal } from "@/components/ui";
 
@@ -30,7 +29,6 @@ export default function Home() {
       <Process />
       <Founder />
       <Pricing />
-      <Team />
       <FAQ />
 
       {/* Final CTA */}
