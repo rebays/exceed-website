@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import { Reveal } from "@/components/ui";
+import { QuoteWizard } from "@/components/sections/QuoteWizard";
 
 const tiers = [
   {
@@ -20,6 +24,8 @@ const tiers = [
 ];
 
 export default function Pricing() {
+  const [openTier, setOpenTier] = useState<string | null>(null);
+
   return (
     <section className="py-32 relative">
       <div className="container mx-auto px-6">
@@ -56,8 +62,8 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <a
-                href="mailto:simbi@exceed.com.sb"
+              <button
+                onClick={() => setOpenTier(tier.name)}
                 className={`inline-flex items-center justify-center rounded-full font-bold uppercase tracking-widest text-xs py-4 transition-all ${
                   tier.featured
                     ? "bg-primary hover:bg-primary-hover text-white"
@@ -65,11 +71,13 @@ export default function Pricing() {
                 }`}
               >
                 Get a Quote
-              </a>
+              </button>
             </Reveal>
           ))}
         </div>
       </div>
+
+      <QuoteWizard isOpen={openTier !== null} onClose={() => setOpenTier(null)} initialTier={openTier ?? "Project"} />
     </section>
   );
 }
