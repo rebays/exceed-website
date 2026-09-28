@@ -1,16 +1,16 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { buttonVariants } from "@/components/ui";
+import { heroClients } from "@/lib/content";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
-// A shopfront at dusk; its sign switches on as the visitor scrolls.
+// Media feeding through a UV printer, advancing as the visitor scrolls.
 // Seeking is only smooth with frequent keyframes, so encode it with e.g.
-//   ffmpeg -i in.mov -an -vf scale=1920:-2 -c:v libx264 -crf 24 -g 6 -pix_fmt yuv420p -movflags +faststart hero-storefront.mp4
-const VIDEO_SRC = "/videos/hero-storefront.mp4";
-const POSTER_SRC = "/videos/hero-storefront.jpg";
+//   ffmpeg -i in.mp4 -an -vf scale=1920:-2 -c:v libx264 -crf 24 -g 6 -pix_fmt yuv420p -movflags +faststart hero-print.mp4
+const VIDEO_SRC = "/videos/hero-print.mp4";
+const POSTER_SRC = "/videos/hero-print.jpg";
 
 // Scroll progress (0 → 1) at which the headline has fully faded out.
 const HEADLINE_OUT = 0.15;
@@ -27,27 +27,7 @@ export default function Hero() {
   const { ref, progress } = useScrollProgress<HTMLElement>();
   const reducedMotion = useReducedMotion();
   const video = useRef<HTMLVideoElement>(null);
-  const headline = useRef<HTMLDivElement>(null);
   const [videoFailed, setVideoFailed] = useState(false);
-
-  // Once the headline has faded, take its buttons out of the tab order and
-  // stop them catching clicks meant for the words beneath.
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      if (headline.current) headline.current.inert = (progress.current ?? 0) >= HEADLINE_OUT;
-    };
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-    };
-  }, [progress]);
 
   // Scrub the video to match scroll progress, easing toward the target so
   // coarse scroll steps still read as continuous motion.
@@ -57,12 +37,12 @@ export default function Hero() {
     if (!el || !v || videoFailed) return;
 
     if (reducedMotion) {
-      const showLit = () => {
+      const showEnd = () => {
         if (v.duration) v.currentTime = v.duration;
       };
-      showLit();
-      v.addEventListener("loadedmetadata", showLit);
-      return () => v.removeEventListener("loadedmetadata", showLit);
+      showEnd();
+      v.addEventListener("loadedmetadata", showEnd);
+      return () => v.removeEventListener("loadedmetadata", showEnd);
     }
 
     let frame = 0;
@@ -114,14 +94,19 @@ export default function Hero() {
             onError={() => setVideoFailed(true)}
           />
         )}
+        {/* Recolour the footage in the brand teal → blue, keeping its light and shade */}
+        <div
+          aria-hidden
+          className="absolute inset-0 mix-blend-color opacity-80"
+          style={{ background: "linear-gradient(135deg, #0cb0d0, #5072e7)" }}
+        />
         {/* Dim the frame so centred text stays legible, fading into the page below */}
         <div aria-hidden className="absolute inset-0 bg-black/45" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black to-transparent" />
 
-        {/* Headline fades away as the sign lights up */}
+        {/* Headline fades away as the print advances */}
         <div
-          ref={headline}
-          className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
+          className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pointer-events-none"
           style={{
             opacity: `calc(1 - var(--progress, 0) / ${HEADLINE_OUT})`,
             transform: "translateY(calc(var(--progress, 0) * -160px))",
@@ -130,13 +115,26 @@ export default function Hero() {
           <h1 className="text-5xl sm:text-6xl md:text-7xl text-metal animate-fade-up [animation-delay:350ms]">
             Refuse to blend in.
           </h1>
-          <div className="mt-10 [@media(max-height:720px)]:mt-6 flex flex-wrap items-center justify-center gap-4 animate-fade-up [animation-delay:500ms]">
-            <a href="#pricing" className={buttonVariants({ size: "lg" })}>
-              Get a quote
-            </a>
-            <Link href="/portfolio" className={buttonVariants({ variant: "secondary", size: "lg" })}>
-              See the work
-            </Link>
+          <p className="mt-6 max-w-xl text-lg md:text-xl text-foreground/75 animate-fade-up [animation-delay:500ms]">
+            Branding, signage, software and print for businesses in Honiara, all under one roof.
+          </p>
+
+          <div className="absolute inset-x-0 bottom-20 [@media(max-height:720px)]:bottom-12 px-6 flex flex-col items-center gap-5 animate-fade-up [animation-delay:650ms]">
+            <p className="eyebrow text-foreground/50">Trusted by</p>
+            <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 md:gap-x-12">
+              {heroClients.map(({ name, src, width, height, displayHeight }) => (
+                <li key={name} className="opacity-70">
+                  <Image
+                    src={src}
+                    alt={name}
+                    width={width}
+                    height={height}
+                    className="w-auto"
+                    style={{ height: displayHeight }}
+                  />
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 

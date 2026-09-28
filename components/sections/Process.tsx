@@ -18,8 +18,6 @@ export default function Process() {
   return (
     <Section className="border-t border-border">
       <Container>
-        <Stats className="mb-32 md:mb-44" />
-
         <SectionHeading
           eyebrow="How we work"
           title="We don't start with answers. We start with the right questions."

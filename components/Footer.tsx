@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { contact, navItems, services } from "@/lib/content";
+import { contact, navItems, partners, services } from "@/lib/content";
 
 export default function Footer() {
   return (
@@ -65,6 +65,17 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+
+        <div className="py-8 border-t border-border flex flex-col md:flex-row md:items-center gap-4 md:gap-10">
+          <h2 className="text-xs font-medium text-foreground">Partners</h2>
+          <ul className="flex flex-wrap gap-x-8 gap-y-2">
+            {partners.map((partner) => (
+              <li key={partner} className="text-base font-semibold tracking-tight text-muted-foreground">
+                {partner}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="pt-8 border-t border-border text-subtle-foreground">

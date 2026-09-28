@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import ProjectMedia from "@/components/ProjectMedia";
 import { Container, Reveal, Section, SectionHeading } from "@/components/ui";
-import { clients, projects } from "@/lib/content";
+import { projects } from "@/lib/content";
 
 /** Full-bleed project panels that stack on top of each other as you scroll. */
 export default function Work() {
@@ -39,17 +39,7 @@ export default function Work() {
       </div>
 
       <Container className="py-24 md:py-32">
-        <Reveal className="flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
-            <p className="eyebrow">Trusted by</p>
-            <ul className="flex flex-wrap justify-center gap-x-10 gap-y-3">
-              {clients.map((client) => (
-                <li key={client} className="text-2xl md:text-3xl font-semibold tracking-tight text-subtle-foreground">
-                  {client}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <Reveal className="flex justify-center">
           <Link href="/portfolio" className="group inline-flex items-center gap-2 text-primary text-lg hover:underline underline-offset-4">
             All projects
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
