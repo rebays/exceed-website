@@ -1,85 +1,82 @@
-import { Users } from "lucide-react";
-import { Reveal } from "@/components/ui";
+import type { Metadata } from "next";
+import FinalCTA from "@/components/sections/FinalCTA";
+import Founder from "@/components/sections/Founder";
+import { Stats } from "@/components/sections/Process";
+import { Container, PageHero, Reveal, Section, SectionHeading, TiltCard } from "@/components/ui";
+import { leaders } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "About | Exceed Enterprise Limited",
+  description: "Exceed Enterprise Limited: a Honiara studio that never settles for good enough.",
+};
+
+const PRINCIPLES = [
+  { label: "Our vision", text: "To be trusted, innovative and profitable." },
+  { label: "Our mission", text: "To deliver and exceed customer expectations." },
+];
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("");
+}
 
 export default function AboutPage() {
-  const stats = [
-    { label: "Founded", value: "2022" },
-    { label: "Regional Offices", value: "8" },
-    { label: "Enterprise Clients", value: "150+" },
-    { label: "Industry Awards", value: "24" },
-  ];
-
-  const leaders = [
-    { name: "Simbi Jama", role: "Chief Executive Officer", bio: "CEO of Exceed Enterprise Limited with 15 years in enterprise strategy." },
-    { name: "Bradon Tupiti", role: "Chief Technology Officer", bio: "Pioneer in distributed systems and cloud architecture." },
-    { name: "Carlos Saliga", role: "Head of Global Operations", bio: "Expert in operational scaling and cross-border expansion." },
-  ];
-
   return (
-    <div className="flex flex-col min-h-screen pt-40 pb-24 relative">
-      <div className="container mx-auto px-6">
-        {/* Header */}
-        <Reveal className="max-w-4xl mx-auto text-center mb-32">
-          <p className="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-6">Our Story</p>
-          <h1 className="text-5xl md:text-8xl text-foreground mb-8">
-            Redefining <span className="text-primary">Excellence</span>
-          </h1>
-          <p className="text-lg md:text-xl text-foreground/60 leading-relaxed max-w-2xl mx-auto">
-            Exceed Enterprise Limited was founded on the principle that businesses should
-            never have to settle for &ldquo;good enough.&rdquo; We push the boundaries of
-            what&apos;s possible in design, fabrication, and software.
-          </p>
-        </Reveal>
+    <>
+      <PageHero
+        eyebrow="About"
+        title="Never settle for good enough."
+        lead="Exceed Enterprise Limited was founded on a simple idea: businesses deserve design, fabrication and software that push past what's expected."
+      />
 
-        {/* Vision & Mission */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
-          <Reveal className="border border-border rounded-[2rem] p-10 md:p-12 bg-accent/20">
-            <h3 className="text-3xl text-foreground mb-4">Our Vision</h3>
-            <p className="text-foreground/60 text-lg leading-relaxed">
-              To be trusted, innovative and profitable.
-            </p>
-          </Reveal>
-          <Reveal delay={80} className="border border-border rounded-[2rem] p-10 md:p-12 bg-accent/20">
-            <h3 className="text-3xl text-foreground mb-4">Our Mission</h3>
-            <p className="text-foreground/60 text-lg leading-relaxed">
-              To deliver and exceed customer expectations.
-            </p>
-          </Reveal>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-32">
-          {stats.map((stat, idx) => (
-            <Reveal key={stat.label} delay={idx * 80} className="text-center border-t border-border pt-6">
-              <p className="text-primary text-5xl md:text-6xl mb-2">{stat.value}</p>
-              <p className="text-foreground/50 text-xs font-bold uppercase tracking-widest">{stat.label}</p>
+      <Container>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {PRINCIPLES.map((item, idx) => (
+            <Reveal key={item.label} delay={idx * 100}>
+              <TiltCard max={4} className="p-10 md:p-14 min-h-[280px] flex flex-col justify-between">
+                <p className="eyebrow">{item.label}</p>
+                <p className="mt-10 text-3xl md:text-4xl font-semibold tracking-[-0.03em] leading-tight text-foreground">
+                  {item.text}
+                </p>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
+      </Container>
 
-        {/* Leadership */}
-        <div>
-          <Reveal className="text-center mb-16">
-            <p className="text-secondary font-bold tracking-[0.3em] uppercase text-xs mb-6">The Team</p>
-            <h2 className="text-4xl md:text-6xl text-foreground mb-4">Leadership</h2>
-            <p className="text-foreground/60 text-lg">Guided by industry veterans with a proven track record.</p>
-          </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <Section>
+        <Container>
+          <Stats />
+        </Container>
+      </Section>
+
+      <Section className="border-t border-border">
+        <Container>
+          <SectionHeading
+            eyebrow="Leadership"
+            title="The people you meet are the ones doing the work."
+          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {leaders.map((leader, idx) => (
-              <Reveal key={leader.name} delay={idx * 100} className="group">
-                <div className="w-full h-[360px] rounded-[1.5rem] mb-6 bg-accent/40 border border-border flex items-center justify-center">
-                  <Users className="w-20 h-20 text-foreground/20" />
-                </div>
-                <h4 className="text-2xl text-foreground mb-1 group-hover:text-primary transition-colors">
-                  {leader.name}
-                </h4>
-                <p className="text-secondary text-xs font-bold uppercase tracking-widest mb-3">{leader.role}</p>
-                <p className="text-foreground/60 text-sm leading-relaxed">{leader.bio}</p>
+              <Reveal key={leader.name} delay={idx * 100}>
+                <TiltCard max={5} className="p-8">
+                  <div className="aspect-square rounded-2xl bg-gradient-to-br from-[#1a1a1c] to-black border border-border flex items-center justify-center mb-8">
+                    <span className="text-7xl font-semibold tracking-[-0.05em] text-metal">{initials(leader.name)}</span>
+                  </div>
+                  <h3 className="text-2xl text-foreground">{leader.name}</h3>
+                  <p className="mt-1 text-sm text-primary">{leader.role}</p>
+                  <p className="mt-4 text-muted-foreground leading-relaxed">{leader.bio}</p>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
-        </div>
-      </div>
-    </div>
+        </Container>
+      </Section>
+
+      <Founder />
+      <FinalCTA />
+    </>
   );
 }

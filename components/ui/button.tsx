@@ -1,24 +1,18 @@
 import { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "outline";
-type Size = "sm" | "md" | "lg" | "icon";
+type Variant = "primary" | "secondary" | "light";
+type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    "bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/20 active:scale-95",
-  secondary:
-    "bg-secondary hover:bg-secondary-hover text-white shadow-lg shadow-secondary/20 active:scale-95",
-  ghost:
-    "bg-transparent hover:bg-accent/50 text-foreground/80 hover:text-foreground",
-  outline:
-    "glass text-foreground/80 hover:text-foreground hover:border-primary/50",
+  primary: "bg-primary hover:bg-primary-hover text-black",
+  secondary: "bg-white/10 hover:bg-white/15 text-foreground backdrop-blur-md",
+  light: "bg-foreground hover:bg-white text-black",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-8 py-4",
-  lg: "px-10 py-5 text-lg",
-  icon: "p-2.5",
+  sm: "h-9 px-4 text-sm",
+  md: "h-11 px-6 text-[15px]",
+  lg: "h-14 px-8 text-base",
 };
 
 export function buttonVariants({
@@ -30,7 +24,7 @@ export function buttonVariants({
   size?: Size;
   className?: string;
 } = {}) {
-  return `inline-flex items-center justify-center gap-2 rounded-full font-bold transition-all ${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim();
+  return `inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim();
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -38,16 +32,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
 }
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  className = "",
-  ...props
-}: ButtonProps) {
-  return (
-    <button
-      className={buttonVariants({ variant, size, className })}
-      {...props}
-    />
-  );
+export function Button({ variant = "primary", size = "md", className = "", ...props }: ButtonProps) {
+  return <button className={buttonVariants({ variant, size, className })} {...props} />;
 }

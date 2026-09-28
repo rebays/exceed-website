@@ -1,83 +1,50 @@
 "use client";
 
-import { X, Mail, Phone, MapPin } from "lucide-react";
-import { useEffect } from "react";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { Modal } from "@/components/ui";
+import { contact } from "@/lib/content";
 
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+export function ContactDetails() {
+  const rows = [
+    { Icon: Mail, label: "Email", value: contact.email, href: `mailto:${contact.email}` },
+    { Icon: Phone, label: "Call", value: contact.phoneDisplay, href: contact.phoneHref },
+    { Icon: MapPin, label: "Visit", value: contact.address.join(", ") },
+  ];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      <div className="relative w-full max-w-lg glass rounded-3xl border border-border p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-300">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full bg-accent/50 hover:bg-accent text-foreground/60 hover:text-foreground transition-all"
-        >
-          <X className="w-4 h-4" />
-        </button>
-
-        <h3 className="text-2xl font-bold mb-2">Get in Touch</h3>
-        <p className="text-foreground/60 text-sm mb-8">
-          Reach out to our global strategy team for customized enterprise solutions.
-        </p>
-
-        <div className="flex flex-col gap-6 mb-8">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              <Mail className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-bold text-sm">Email Us</p>
-              <a href="mailto:simbi@exceed.com.sb" className="text-foreground/60 text-sm hover:text-primary transition-colors">simbi@exceed.com.sb</a>
-            </div>
+    <ul className="flex flex-col divide-y divide-border">
+      {rows.map(({ Icon, label, value, href }) => (
+        <li key={label} className="flex items-center gap-4 py-4">
+          <span className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+            <Icon className="w-4 h-4 text-primary" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground">{label}</p>
+            {href ? (
+              <a href={href} className="text-foreground hover:text-primary transition-colors break-words">
+                {value}
+              </a>
+            ) : (
+              <p className="text-foreground">{value}</p>
+            )}
           </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              <Phone className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-bold text-sm">Call Us</p>
-              <a href="tel:+15551234567" className="text-foreground/60 text-sm hover:text-primary transition-colors">+677 7421687 | 39333</a>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-bold text-sm">Visit Us</p>
-              <p className="text-foreground/60 text-sm">
-                Room 19 Level 1<br />
-                Captial Park<br />
-                Honiara, Solomon Islands
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* <a href="mailto:hello@exceed.example.com" className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-primary/20 text-center inline-block">
-          Book a Consultation
-        </a> */}
-      </div>
-    </div>
+export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} label="Contact Exceed">
+      <h2 className="text-3xl text-foreground mb-2">Get in touch.</h2>
+      <p className="text-muted-foreground mb-6">Tell us what you&apos;re building.</p>
+      <ContactDetails />
+    </Modal>
   );
 }

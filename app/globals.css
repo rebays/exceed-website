@@ -1,29 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  /* Base */
-  --background: #0a0e13;
-  --foreground: #eef3f6;
+  /* Canvas — true black, Apple-neutral greys */
+  --background: #000000;
+  --foreground: #f5f5f7;
 
-  /* Brand — sampled from the Exceed logo (teal wordmark, blue-violet "X") */
+  /* Brand accent — Exceed teal, used sparingly */
   --primary: #0cb0d0;
-  --primary-hover: #0e97b3;
-  --secondary: #5072e7;
-  --secondary-hover: #6b89ec;
+  --primary-hover: #2cc3e0;
 
   /* Surfaces */
-  --accent: #10161d;
-  --card: #0d1319;
-  --border: #1e2a34;
+  --card: #0d0d0e;
+  --elevated: #161617;
+  --border: rgba(255, 255, 255, 0.1);
 
-  /* Muted */
-  --muted: #131b22;
-  --muted-foreground: #8b98a3;
-
-  /* Status */
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --error: #ef4444;
+  /* Text */
+  --muted-foreground: #86868b;
+  --subtle-foreground: #6e6e73;
 }
 
 @theme inline {
@@ -31,108 +24,118 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
-  --color-secondary: var(--secondary);
-  --color-secondary-hover: var(--secondary-hover);
-  --color-accent: var(--accent);
   --color-card: var(--card);
+  --color-elevated: var(--elevated);
   --color-border: var(--border);
-  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-error: var(--error);
-  --font-sans: var(--font-dm-sans);
-  --font-display: var(--font-anton);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --font-sans: var(--font-geist);
 }
 
-/* Dark theme is now the default — no media query override needed */
-
-* {
-  scroll-behavior: smooth;
+@theme static {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  overflow-x: hidden;
-}
-
-h1, h2, h3 {
-  font-family: var(--font-display), system-ui, sans-serif;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  line-height: 0.95;
-}
-
-.glass {
-  background: rgba(20, 19, 18, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(239, 232, 220, 0.1);
-}
-
-.glow-primary {
-  box-shadow: 0 0 40px rgba(12, 176, 208, 0.18), 0 20px 60px rgba(12, 176, 208, 0.12);
-}
-
-.glow-secondary {
-  box-shadow: 0 0 40px rgba(80, 114, 231, 0.16), 0 20px 60px rgba(80, 114, 231, 0.1);
-}
-
-.text-gradient-brand {
-  background: linear-gradient(120deg, var(--primary), var(--secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-}
-
-.bg-grid {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40' fill='%23eef3f6' fill-opacity='0.08'%3E%3C/path%3E%3C/svg%3E");
-}
-
-@keyframes pulse-slow {
-  0%, 100% {
-    opacity: 0.15;
-    transform: scale(1) translateY(0);
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
   }
-  50% {
-    opacity: 0.25;
-    transform: scale(1.05) translateY(-20px);
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 15s ease-in-out infinite;
+@layer components {
+  /* Small uppercase label — the Starlink touch */
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  /* Subtle surface with a hairline highlight on the top edge */
+  .surface {
+    background: linear-gradient(180deg, #121213 0%, #0a0a0b 100%);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .glass {
+    background: rgba(22, 22, 23, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--border);
+  }
+
+  /* Silver-to-grey headline fill, like Apple product titles */
+  .text-metal {
+    background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
-@keyframes bounce-slow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-bounce-slow {
-  animation: bounce-slow 4s ease-in-out infinite;
+@utility animate-fade-up {
+  animation-name: fade-up;
+  animation-duration: 1s;
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@utility animate-modal-in {
+  animation-name: modal-in;
+  animation-duration: 0.4s;
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+}
+
+@keyframes scroll-cue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+@utility animate-scroll-cue {
+  animation-name: scroll-cue;
+  animation-duration: 2s;
+  animation-timing-function: var(--ease-out-expo);
+  animation-iteration-count: infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

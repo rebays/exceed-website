@@ -2,117 +2,150 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import ContactModal from "./ContactModal";
+import ContactButton from "./ContactButton";
+import { buttonVariants } from "@/components/ui";
+import { navItems } from "@/lib/content";
 
 export default function Navbar() {
-  const [isPastHero, setIsPastHero] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPath, setMenuPath] = useState(pathname);
 
-  const navItems = [
-    { name: "Portfolio", href: "/portfolio" },
-    { name: "Solutions", href: "/solutions" },
-    { name: "About", href: "/about" },
-  ];
+  // Close the mobile menu whenever the route changes.
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    setMenuOpen(false);
+  }
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsPastHero(window.scrollY >= 40);
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0);
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [menuOpen]);
+
+  const solid = scrolled || menuOpen;
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isPastHero ? "bg-background/90 backdrop-blur-md border-b border-border" : "bg-transparent"
-      }`}
-    >
-      <div
-        className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-primary to-secondary transition-[width] duration-150 ease-out"
-        style={{ width: `${scrollProgress}%` }}
-      />
-      <div className="container mx-auto px-6 flex items-center justify-between h-20">
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Exceed Enterprise Limited"
-            width={4961}
-            height={1418}
-            priority
-            className="h-9 w-auto md:h-10"
-          />
-        </Link>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-10">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-sm font-bold uppercase tracking-widest text-foreground/70 hover:text-primary transition-colors"
-            >
-              {item.name}
-            </Link>
-          ))}
-          <button
-            onClick={() => setIsContactModalOpen(true)}
-            className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary transition-colors"
-          >
-            Contact
-          </button>
-        </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-foreground p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden absolute top-full left-0 right-0 bg-background border-t border-border overflow-hidden transition-all duration-300 ease-out ${
-          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 border-t-0"
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
+          solid
+            ? "bg-black/70 backdrop-blur-xl backdrop-saturate-150 border-b border-border"
+            : "border-b border-transparent"
         }`}
       >
-        <div className="p-6 flex flex-col gap-4">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-lg font-bold uppercase tracking-widest py-2 border-b border-border/50 text-foreground"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {item.name}
-            </Link>
-          ))}
-          <button
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              setIsContactModalOpen(true);
-            }}
-            className="text-lg font-bold uppercase tracking-widest py-2 text-primary text-left"
+        <nav
+          className="mx-auto max-w-[1200px] px-6 h-14 flex items-center justify-between"
+          aria-label="Main"
+        >
+          <Link
+            href="/"
+            className="flex items-center shrink-0"
+            aria-label="Exceed home"
           >
-            Contact
-          </button>
+            <Image
+              src="/logo.png"
+              alt="Exceed Enterprise Limited"
+              width={84}
+              height={24}
+              priority
+              className="h-6 w-auto"
+            />
+          </Link>
+
+          <ul className="hidden md:flex items-center gap-10">
+            {navItems.map((item) => {
+              const active = pathname.startsWith(item.href);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={`text-[13px] tracking-wide transition-colors ${
+                      active
+                        ? "text-foreground"
+                        : "text-foreground/65 hover:text-foreground"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="flex items-center gap-2">
+            <div className="hidden md:block">
+            <ContactButton className={buttonVariants({ variant: "secondary", size: "sm" })}>Contact</ContactButton>
+          </div>
+            <button
+              className="md:hidden -mr-2 p-2 text-foreground"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+            >
+              {menuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Mobile menu — full-screen, Apple-style */}
+      <div
+        id="mobile-menu"
+        className={`md:hidden fixed inset-x-0 top-14 bottom-0 z-40 bg-black/95 backdrop-blur-xl transition-opacity duration-500 ${
+          menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        inert={!menuOpen}
+      >
+        <ul className="px-8 pt-10 flex flex-col gap-2">
+          {[{ name: "Home", href: "/" }, ...navItems].map((item, idx) => (
+            <li
+              key={item.href}
+              className="transition-all duration-500 ease-out-expo"
+              style={{
+                transitionDelay: menuOpen ? `${idx * 50 + 100}ms` : "0ms",
+                opacity: menuOpen ? 1 : 0,
+                transform: menuOpen ? "none" : "translateY(-8px)",
+              }}
+            >
+              <Link
+                href={item.href}
+                className="block py-2 text-3xl font-semibold tracking-tight text-foreground"
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="px-8 mt-10">
+          <ContactButton
+            className={buttonVariants({ size: "lg", className: "w-full" })}
+          >
+            Contact us
+          </ContactButton>
         </div>
       </div>
-
-      <ContactModal
-        isOpen={isContactModalOpen}
-        onClose={() => setIsContactModalOpen(false)}
-      />
-    </nav>
+    </>
   );
 }
