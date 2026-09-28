@@ -1,64 +1,51 @@
-import { Reveal } from "@/components/ui";
+import { Container, Reveal, Section, SectionHeading } from "@/components/ui";
+import { processSteps, stats } from "@/lib/content";
 
-const steps = [
-  {
-    step: "01",
-    title: "Discovery",
-    timeframe: "2-3 days",
-    desc: "We study the brand, the market, and the constraints before proposing anything.",
-  },
-  {
-    step: "02",
-    title: "Strategy",
-    timeframe: "3-5 days",
-    desc: "We decide what matters — messaging, materials, and priorities — before making anything.",
-  },
-  {
-    step: "03",
-    title: "Concept",
-    timeframe: "4-5 days",
-    desc: "Directions are explored and pressure-tested before they become final designs.",
-  },
-  {
-    step: "04",
-    title: "Design & Fabrication",
-    timeframe: "1-4 weeks",
-    desc: "From design files to physical signage, prints, and builds — produced to spec.",
-  },
-  {
-    step: "05",
-    title: "Delivery",
-    timeframe: "Ongoing",
-    desc: "Installed, tested, and supported. We launch when it's ready — not before.",
-  },
-];
+export function Stats({ className = "" }: { className?: string }) {
+  return (
+    <dl className={`grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6 ${className}`}>
+      {stats.map((stat, idx) => (
+        <Reveal key={stat.label} delay={idx * 80} className="flex flex-col-reverse text-center">
+          <dt className="mt-3 text-sm text-muted-foreground">{stat.label}</dt>
+          <dd className="text-5xl md:text-7xl font-semibold tracking-[-0.04em] text-metal">{stat.value}</dd>
+        </Reveal>
+      ))}
+    </dl>
+  );
+}
 
 export default function Process() {
   return (
-    <section className="py-32 relative">
-      <div className="container mx-auto px-6">
-        <Reveal>
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-secondary mb-8 text-center">
-            Process
-          </p>
-          <h2 className="text-4xl md:text-7xl text-center text-foreground mb-24 max-w-4xl mx-auto">
-            We don&apos;t start with answers. We start with the right questions.
-          </h2>
-        </Reveal>
+    <Section className="border-t border-border">
+      <Container>
+        <Stats className="mb-32 md:mb-44" />
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-          {steps.map((s, idx) => (
-            <Reveal key={s.step} delay={idx * 90} className="border-t-2 border-primary pt-6 flex flex-col gap-4">
-              <span className="text-secondary text-sm font-bold">{s.step}</span>
-              <h3 className="text-2xl text-foreground">{s.title}</h3>
-              <p className="text-xs font-bold uppercase tracking-widest text-foreground/40">
-                {s.timeframe}
-              </p>
-              <p className="text-foreground/60 text-sm leading-relaxed">{s.desc}</p>
-            </Reveal>
-          ))}
+        <SectionHeading
+          eyebrow="How we work"
+          title="We don't start with answers. We start with the right questions."
+        />
+
+        <div className="relative">
+          {/* Connecting rail on desktop */}
+          <div aria-hidden className="hidden md:block absolute top-[7px] left-0 right-0 h-px bg-gradient-to-r from-primary/60 via-white/15 to-transparent" />
+          <ol className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-6">
+            {processSteps.map((step, idx) => (
+              <li key={step.title}>
+                <Reveal delay={idx * 90} className="relative flex flex-col pl-8 md:pl-0 border-l border-border md:border-0">
+                  <span className="absolute -left-[7px] md:left-0 top-0 w-[15px] h-[15px] rounded-full border border-primary bg-black flex items-center justify-center">
+                    <span className="w-[5px] h-[5px] rounded-full bg-primary" />
+                  </span>
+                  <p className="md:mt-10 eyebrow">
+                    {String(idx + 1).padStart(2, "0")} · {step.time}
+                  </p>
+                  <h3 className="mt-3 text-2xl text-foreground">{step.title}</h3>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">{step.desc}</p>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

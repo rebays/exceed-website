@@ -1,65 +1,52 @@
-import { Cpu, Globe, Zap } from "lucide-react";
-import { Reveal } from "@/components/ui";
+import type { Metadata } from "next";
+import { Check } from "lucide-react";
+import FinalCTA from "@/components/sections/FinalCTA";
+import Services from "@/components/sections/Services";
+import { Container, PageHero, Reveal, Section, TiltCard } from "@/components/ui";
+import { solutions } from "@/lib/content";
 
-const solutions = [
-  {
-    title: "Design & Brand Services",
-    desc: "Comprehensive branding and design services to elevate your corporate identity and engage your audience effectively.",
-    icon: <Globe className="w-7 h-7" />,
-    features: ["Design & corporate rebranding", "Social media marketing & management", "Photography & high-res scanning", "Sport venue branding & consultancy", "Welding & fabrication", "Billboard & signage installation"],
-  },
-  {
-    title: "Premium Products",
-    desc: "High-quality physical products ranging from large-scale signs and billboards to bespoke merchandise and apparel.",
-    icon: <Zap className="w-7 h-7" />,
-    features: ["Signs, banners & billboards", "LEDs & LED lightboxes", "Channel letters & vehicle/boat wraps", "Flyers, posters, and books", "PVC ID/business cards & t-shirts", "WaveLight media displays"],
-  },
-  {
-    title: "Software Development",
-    desc: "Cutting-edge software engineering tailored to your business needs, from enterprise applications to custom development.",
-    icon: <Cpu className="w-7 h-7" />,
-    features: ["Custom software solutions", "Web & mobile applications", "Enterprise systems"],
-  },
-];
+export const metadata: Metadata = {
+  title: "Solutions | Exceed Enterprise Limited",
+  description: "Design & brand services, premium physical products and custom software from one studio.",
+};
 
 export default function SolutionsPage() {
   return (
-    <div className="flex flex-col min-h-screen pt-40 pb-24 relative">
-      <div className="container mx-auto px-6">
-        <Reveal className="max-w-3xl mb-24">
-          <h1 className="text-5xl md:text-8xl text-foreground mb-6">Solutions</h1>
-          <p className="text-lg md:text-xl text-foreground/60 leading-relaxed">
-            We deliver a comprehensive suite of high-impact services designed to address the
-            unique demands of modern enterprise environments.
-          </p>
-        </Reveal>
+    <>
+      <PageHero
+        eyebrow="Solutions"
+        title="Everything your brand touches."
+        lead="Three practices, one team — so what you see on screen is exactly what gets built, printed and installed."
+      />
 
-        <div className="flex flex-col">
+      <Section className="pt-0! md:pt-0!">
+        <Container className="flex flex-col gap-24 md:gap-40">
           {solutions.map((solution, idx) => (
-            <Reveal key={solution.title} delay={idx * 100} className="border-t border-border last:border-b py-16">
-              <div className="flex flex-col md:flex-row gap-12">
-                <div className="md:w-1/3 space-y-6">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center text-primary">
-                    {solution.icon}
-                  </div>
-                  <h3 className="text-3xl md:text-4xl text-foreground">{solution.title}</h3>
-                  <p className="text-foreground/60 leading-relaxed">{solution.desc}</p>
-                </div>
-                <ul className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 content-start">
-                  {solution.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 border-b border-border/50 pb-4">
-                      <span className="text-secondary text-xs font-bold shrink-0">
-                        {String(idx + 1).padStart(2, "0")}
-                      </span>
-                      <span className="font-medium text-foreground/80">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
+            <div key={solution.title} className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+              <Reveal className={idx % 2 ? "md:order-2" : ""}>
+                <p className="eyebrow mb-5">{String(idx + 1).padStart(2, "0")}</p>
+                <h2 className="text-4xl md:text-6xl text-metal">{solution.title}</h2>
+                <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed">{solution.desc}</p>
+              </Reveal>
+              <Reveal delay={120}>
+                <TiltCard max={5} className="p-8 md:p-10">
+                  <ul className="flex flex-col divide-y divide-border">
+                    {solution.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-4 py-4 text-foreground/90">
+                        <Check className="w-4 h-4 text-primary shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </TiltCard>
+              </Reveal>
+            </div>
           ))}
-        </div>
-      </div>
-    </div>
+        </Container>
+      </Section>
+
+      <Services />
+      <FinalCTA />
+    </>
   );
 }

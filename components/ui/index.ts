@@ -1,7 +1,7 @@
 export { Button, buttonVariants } from "./button";
-export { Badge } from "./badge";
-export { Card } from "./card";
-export { Input } from "./input";
-export { Section, Container } from "./section";
-export { GradientText } from "./gradient-text";
+export { Input, fieldClasses } from "./input";
+export { Section, Container, SectionHeading } from "./section";
 export { Reveal } from "./reveal";
+export { TiltCard } from "./tilt-card";
+export { Modal } from "./modal";
+export { PageHero } from "./page-hero";

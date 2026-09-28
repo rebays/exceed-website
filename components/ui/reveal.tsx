@@ -12,8 +12,8 @@ interface RevealProps extends HTMLAttributes<HTMLDivElement> {
 export function Reveal({
   children,
   delay = 0,
-  y = 28,
-  duration = 700,
+  y = 32,
+  duration = 1000,
   className = "",
   style,
   ...props
@@ -41,12 +41,13 @@ export function Reveal({
 
   const revealStyle: CSSProperties = {
     ...style,
-    transitionProperty: "opacity, transform",
+    transitionProperty: "opacity, transform, filter",
     transitionDuration: `${duration}ms`,
-    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+    transitionTimingFunction: "var(--ease-out-expo)",
     transitionDelay: `${delay}ms`,
     opacity: visible ? 1 : 0,
     transform: visible ? "translateY(0)" : `translateY(${y}px)`,
+    filter: visible ? "blur(0)" : "blur(6px)",
   };
 
   return (

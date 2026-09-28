@@ -1,69 +1,110 @@
-import { Reveal } from "@/components/ui";
+"use client";
+
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { buttonVariants } from "@/components/ui";
+import { useScrollProgress } from "@/lib/use-scroll-progress";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
+// three.js only ever loads in the browser, in its own chunk.
+const HeroScene = dynamic(() => import("@/components/three/HeroScene"), { ssr: false });
+
+let webglSupport: boolean | undefined;
+function detectWebGL() {
+  if (webglSupport === undefined) {
+    try {
+      const canvas = document.createElement("canvas");
+      webglSupport = !!(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+    } catch {
+      webglSupport = false;
+    }
+  }
+  return webglSupport;
+}
+const noopSubscribe = () => () => {};
 
 export default function Hero() {
-  const tags = ["Brand", "Signage", "Software", "Print"];
+  const { ref, progress } = useScrollProgress<HTMLElement>();
+  const reducedMotion = useReducedMotion();
+  const hasWebGL = useSyncExternalStore(noopSubscribe, detectWebGL, () => false);
+  const [active, setActive] = useState(true);
+  const headline = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-end overflow-hidden bg-background pt-32 pb-16">
-      {/* Background video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-60"
-      >
-        <source src="/videos/print-1.mp4" type="video/mp4" />
-      </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-background" />
-      <div className="absolute inset-0 bg-grid opacity-30 mix-blend-overlay" />
-
-      {/* Top info row */}
-      <Reveal className="container mx-auto px-6 relative z-10 mb-16">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-10">
-          <div>
-            <div className="flex items-center gap-2 mb-6 text-xs font-bold uppercase tracking-[0.3em] text-secondary">
-              <span className="w-3 h-3 rounded-full bg-primary inline-block" />
-              Design &amp; Build Studio
-            </div>
-            <h1 className="text-4xl md:text-6xl text-foreground mb-6">Design Agency</h1>
-            <div className="text-xs font-bold uppercase tracking-widest text-foreground/50 leading-relaxed">
-              ROOM 19 LEVEL 1<br />
-              CAPITAL PARK<br />
-              HONIARA, SOLOMON ISLANDS
-            </div>
+    <section ref={ref} className="relative h-[220vh]" aria-label="Introduction">
+      <div className="sticky top-0 h-svh overflow-hidden">
+        {/* Glow sits behind the canvas and doubles as the no-WebGL fallback */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2 w-[70vmin] h-[70vmin] rounded-full blur-[100px] opacity-50"
+          style={{ background: "radial-gradient(closest-side, rgba(12,176,208,0.55), rgba(80,114,231,0.2), transparent)" }}
+        />
+        {hasWebGL && (
+          <div className="absolute inset-0 animate-fade-up" style={{ animationDuration: "1.2s" }}>
+            <HeroScene progress={progress} active={active} reducedMotion={reducedMotion} headline={headline} />
           </div>
+        )}
 
-          <div className="text-right">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-secondary mb-4">EST. 2022</p>
-            <div className="flex flex-col gap-1">
-              {tags.map((tag) => (
-                <span key={tag} className="text-xl md:text-2xl text-foreground/80 font-display">
-                  {tag}
-                </span>
-              ))}
-            </div>
+        {/* Phase 1 — headline, fades away as the mark spins back */}
+        <div
+          ref={headline}
+          className="absolute inset-x-0 bottom-0 pb-16 md:pb-20 px-6 text-center"
+          style={{
+            opacity: "calc(1 - var(--progress, 0) * 3.2)",
+            transform: "translateY(calc(var(--progress, 0) * -120px))",
+          }}
+        >
+          <p className="eyebrow mb-5 animate-fade-up [animation-delay:200ms]">Exceed Enterprise · Honiara</p>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl [@media(max-height:720px)]:text-5xl text-metal animate-fade-up [animation-delay:350ms]">
+            Work that refuses
+            <br className="hidden sm:block" /> to blend in.
+          </h1>
+          <p className="mt-6 mx-auto max-w-xl text-lg md:text-xl text-muted-foreground animate-fade-up [animation-delay:500ms]">
+            Branding, signage and software — designed, built and installed by one studio.
+          </p>
+          <div className="mt-10 [@media(max-height:720px)]:mt-6 flex flex-wrap items-center justify-center gap-4 animate-fade-up [animation-delay:650ms]">
+            <a href="#pricing" className={buttonVariants({ size: "lg" })}>
+              Get a quote
+            </a>
+            <Link href="/portfolio" className={buttonVariants({ variant: "secondary", size: "lg" })}>
+              See the work
+            </Link>
           </div>
         </div>
-      </Reveal>
 
-      {/* Giant headline */}
-      <div className="relative z-10 px-6">
-        <Reveal delay={100}>
-          <h2 className="text-primary text-[13vw] leading-[0.85] md:text-[8.5vw]">
-            OUR WORK
-          </h2>
-        </Reveal>
-        <Reveal delay={200}>
-          <h2 className="text-foreground/90 text-[13vw] leading-[0.85] md:text-[8.5vw]">
-            REFUSES TO
-          </h2>
-        </Reveal>
-        <Reveal delay={300}>
-          <h2 className="text-foreground/40 text-[13vw] leading-[0.85] md:text-[8.5vw]">
-            BLEND IN
-          </h2>
-        </Reveal>
+        {/* Phase 2 — the four disciplines, revealed mid-scroll */}
+        <div
+          aria-hidden
+          className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none"
+          style={{
+            opacity: "clamp(0, calc((var(--progress, 0) - 0.4) * 4), 1)",
+            transform: "scale(calc(0.92 + var(--progress, 0) * 0.08))",
+          }}
+        >
+          <p className="text-center text-5xl md:text-8xl font-semibold tracking-[-0.04em] leading-[1.05] text-metal">
+            Design. Signage.
+            <br />
+            Software. Print.
+          </p>
+        </div>
+
+        {/* Scroll cue */}
+        <div
+          aria-hidden
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 h-10 w-px overflow-hidden bg-white/10 hidden md:block"
+          style={{ opacity: "calc(1 - var(--progress, 0) * 8)" }}
+        >
+          <div className="h-1/2 w-full bg-white/60 animate-scroll-cue" />
+        </div>
       </div>
     </section>
   );
