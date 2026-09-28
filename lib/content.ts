@@ -88,7 +88,17 @@ export const projects: {
   },
 ];
 
-export const clients = ["ORG Clinic", "Rebays", "OVO"];
+export const partners = ["ORG Clinic", "Rebays", "OVO"];
+
+// White one-colour logos for the hero. `displayHeight` is in px,
+// tuned so wide wordmarks and tall crests carry similar visual weight.
+export const heroClients = [
+  { name: "Our Telekom", src: "/clients/our-telekom.png", width: 497, height: 240, displayHeight: 36 },
+  { name: "Oceania Football Confederation", src: "/clients/ofc.png", width: 320, height: 235, displayHeight: 34 },
+  { name: "Solomon Submarine Cable", src: "/clients/siscc.png", width: 529, height: 261, displayHeight: 32 },
+  { name: "Solomon Islands Government", src: "/clients/solomon-islands-government.png", width: 199, height: 240, displayHeight: 46 },
+  { name: "Australian Government Department of Foreign Affairs and Trade", src: "/clients/dfat.png", width: 1375, height: 240, displayHeight: 30 },
+];
 
 export const stats = [
   { label: "Founded", value: "2022" },

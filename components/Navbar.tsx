@@ -89,9 +89,12 @@ export default function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2">
-            <div className="hidden md:block">
-            <ContactButton className={buttonVariants({ variant: "secondary", size: "sm" })}>Contact</ContactButton>
-          </div>
+            <div className="hidden md:flex items-center gap-2">
+              <ContactButton className={buttonVariants({ variant: "secondary", size: "sm" })}>Contact</ContactButton>
+              <Link href="/#pricing" className={buttonVariants({ size: "sm" })}>
+                Get a quote
+              </Link>
+            </div>
             <button
               className="md:hidden -mr-2 p-2 text-foreground"
               onClick={() => setMenuOpen((open) => !open)}
@@ -138,9 +141,16 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <div className="px-8 mt-10">
-          <ContactButton
+        <div className="px-8 mt-10 flex flex-col gap-3">
+          <Link
+            href="/#pricing"
             className={buttonVariants({ size: "lg", className: "w-full" })}
+            onClick={() => setMenuOpen(false)}
+          >
+            Get a quote
+          </Link>
+          <ContactButton
+            className={buttonVariants({ variant: "secondary", size: "lg", className: "w-full" })}
           >
             Contact us
           </ContactButton>
