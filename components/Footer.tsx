@@ -4,7 +4,8 @@ import { contact, navItems, services } from "@/lib/content";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-[#0a0a0b] text-sm">
+    // No background of its own: it shares the page black and the glow from the section above.
+    <footer className="relative text-sm">
       <div className="mx-auto max-w-[1200px] px-6 pt-20 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 pb-16">
           <div className="col-span-2 md:col-span-1 flex flex-col gap-5">

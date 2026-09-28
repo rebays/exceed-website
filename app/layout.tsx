@@ -13,9 +13,6 @@ export const metadata: Metadata = {
   title: "Exceed Enterprise Limited | Branding, Signage & Software Studio",
   description:
     "A Honiara-based studio building brands that refuse to blend in — branding, signage & fabrication, and custom software.",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export const viewport: Viewport = {
