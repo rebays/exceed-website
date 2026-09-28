@@ -1,77 +1,136 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { buttonVariants } from "@/components/ui";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
-// three.js only ever loads in the browser, in its own chunk.
-const HeroScene = dynamic(() => import("@/components/three/HeroScene"), { ssr: false });
+// A shopfront at dusk; its sign switches on as the visitor scrolls.
+// Seeking is only smooth with frequent keyframes, so encode it with e.g.
+//   ffmpeg -i in.mov -an -vf scale=1920:-2 -c:v libx264 -crf 24 -g 6 -pix_fmt yuv420p -movflags +faststart hero-storefront.mp4
+const VIDEO_SRC = "/videos/hero-storefront.mp4";
+const POSTER_SRC = "/videos/hero-storefront.jpg";
 
-let webglSupport: boolean | undefined;
-function detectWebGL() {
-  if (webglSupport === undefined) {
-    try {
-      const canvas = document.createElement("canvas");
-      webglSupport = !!(canvas.getContext("webgl2") || canvas.getContext("webgl"));
-    } catch {
-      webglSupport = false;
-    }
-  }
-  return webglSupport;
-}
-const noopSubscribe = () => () => {};
+// Scroll progress (0 → 1) at which the headline has fully faded out.
+const HEADLINE_OUT = 0.15;
+// Words shown in turn as the video plays, each visible between `from` and `to`.
+const FADE = 0.05;
+const BEATS = [
+  { word: "Design.", from: 0.18, to: 0.38 },
+  { word: "Signage.", from: 0.38, to: 0.58 },
+  { word: "Software.", from: 0.58, to: 0.78 },
+  { word: "Print.", from: 0.78, to: 1.2 },
+];
 
 export default function Hero() {
   const { ref, progress } = useScrollProgress<HTMLElement>();
   const reducedMotion = useReducedMotion();
-  const hasWebGL = useSyncExternalStore(noopSubscribe, detectWebGL, () => false);
-  const [active, setActive] = useState(true);
+  const video = useRef<HTMLVideoElement>(null);
   const headline = useRef<HTMLDivElement>(null);
+  const [videoFailed, setVideoFailed] = useState(false);
 
+  // Once the headline has faded, take its buttons out of the tab order and
+  // stop them catching clicks meant for the words beneath.
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (headline.current) headline.current.inert = (progress.current ?? 0) >= HEADLINE_OUT;
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+    };
+  }, [progress]);
+
+  // Scrub the video to match scroll progress, easing toward the target so
+  // coarse scroll steps still read as continuous motion.
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting));
+    const v = video.current;
+    if (!el || !v || videoFailed) return;
+
+    if (reducedMotion) {
+      const showLit = () => {
+        if (v.duration) v.currentTime = v.duration;
+      };
+      showLit();
+      v.addEventListener("loadedmetadata", showLit);
+      return () => v.removeEventListener("loadedmetadata", showLit);
+    }
+
+    let frame = 0;
+    let current = 0;
+    const tick = () => {
+      frame = requestAnimationFrame(tick);
+      if (!v.duration || v.seeking) return;
+      const target = (progress.current ?? 0) * v.duration;
+      current += (target - current) * 0.15;
+      if (Math.abs(v.currentTime - current) > 1 / 60) v.currentTime = current;
+    };
+
+    // iOS Safari won't render seeks until the video has played once.
+    const prime = () => v.play().then(() => v.pause()).catch(() => {});
+    v.addEventListener("loadedmetadata", prime, { once: true });
+
+    const observer = new IntersectionObserver(([entry]) => {
+      cancelAnimationFrame(frame);
+      if (entry.isIntersecting) frame = requestAnimationFrame(tick);
+    });
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [ref]);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+      v.removeEventListener("loadedmetadata", prime);
+    };
+  }, [ref, progress, reducedMotion, videoFailed]);
 
   return (
-    <section ref={ref} className="relative h-[220vh]" aria-label="Introduction">
+    <section ref={ref} className="relative h-[320vh]" aria-label="Introduction">
       <div className="sticky top-0 h-svh overflow-hidden">
-        {/* Glow sits behind the canvas and doubles as the no-WebGL fallback */}
+        {/* Glow sits behind the video and doubles as its fallback */}
         <div
           aria-hidden
-          className="absolute left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2 w-[70vmin] h-[70vmin] rounded-full blur-[100px] opacity-50"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vmin] h-[70vmin] rounded-full blur-[100px] opacity-50"
           style={{ background: "radial-gradient(closest-side, rgba(12,176,208,0.55), rgba(80,114,231,0.2), transparent)" }}
         />
-        {hasWebGL && (
-          <div className="absolute inset-0 animate-fade-up" style={{ animationDuration: "1.2s" }}>
-            <HeroScene progress={progress} active={active} reducedMotion={reducedMotion} headline={headline} />
-          </div>
+        {!videoFailed && (
+          <video
+            ref={video}
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover animate-fade-up"
+            style={{ animationDuration: "1.2s" }}
+            src={VIDEO_SRC}
+            poster={POSTER_SRC}
+            muted
+            playsInline
+            preload="auto"
+            onError={() => setVideoFailed(true)}
+          />
         )}
+        {/* Dim the frame so centred text stays legible, fading into the page below */}
+        <div aria-hidden className="absolute inset-0 bg-black/45" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black to-transparent" />
 
-        {/* Phase 1 — headline, fades away as the mark spins back */}
+        {/* Headline fades away as the sign lights up */}
         <div
           ref={headline}
-          className="absolute inset-x-0 bottom-0 pb-16 md:pb-20 px-6 text-center"
+          className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
           style={{
-            opacity: "calc(1 - var(--progress, 0) * 3.2)",
-            transform: "translateY(calc(var(--progress, 0) * -120px))",
+            opacity: `calc(1 - var(--progress, 0) / ${HEADLINE_OUT})`,
+            transform: "translateY(calc(var(--progress, 0) * -160px))",
           }}
         >
-          <p className="eyebrow mb-5 animate-fade-up [animation-delay:200ms]">Exceed Enterprise · Honiara</p>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl [@media(max-height:720px)]:text-5xl text-metal animate-fade-up [animation-delay:350ms]">
-            Work that refuses
-            <br className="hidden sm:block" /> to blend in.
+          <h1 className="text-5xl sm:text-6xl md:text-7xl text-metal animate-fade-up [animation-delay:350ms]">
+            Refuse to blend in.
           </h1>
-          <p className="mt-6 mx-auto max-w-xl text-lg md:text-xl text-muted-foreground animate-fade-up [animation-delay:500ms]">
-            Branding, signage and software — designed, built and installed by one studio.
-          </p>
-          <div className="mt-10 [@media(max-height:720px)]:mt-6 flex flex-wrap items-center justify-center gap-4 animate-fade-up [animation-delay:650ms]">
+          <div className="mt-10 [@media(max-height:720px)]:mt-6 flex flex-wrap items-center justify-center gap-4 animate-fade-up [animation-delay:500ms]">
             <a href="#pricing" className={buttonVariants({ size: "lg" })}>
               Get a quote
             </a>
@@ -81,21 +140,21 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Phase 2 — the four disciplines, revealed mid-scroll */}
-        <div
-          aria-hidden
-          className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none"
-          style={{
-            opacity: "clamp(0, calc((var(--progress, 0) - 0.4) * 4), 1)",
-            transform: "scale(calc(0.92 + var(--progress, 0) * 0.08))",
-          }}
-        >
-          <p className="text-center text-5xl md:text-8xl font-semibold tracking-[-0.04em] leading-[1.05] text-metal">
-            Design. Signage.
-            <br />
-            Software. Print.
+        {/* One discipline at a time while the video plays; the last one stays */}
+        <p className="sr-only">Design, signage, software and print.</p>
+        {BEATS.map(({ word, from, to }) => (
+          <p
+            key={word}
+            aria-hidden
+            className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none text-center text-6xl sm:text-7xl md:text-9xl font-semibold tracking-[-0.04em] text-metal"
+            style={{
+              opacity: `clamp(0, min((var(--progress, 0) - ${from}) / ${FADE}, (${to} - var(--progress, 0)) / ${FADE}), 1)`,
+              transform: `translateY(calc(clamp(-1, (var(--progress, 0) - ${(from + to) / 2}) / ${to - from}, 1) * -40px))`,
+            }}
+          >
+            {word}
           </p>
-        </div>
+        ))}
 
         {/* Scroll cue */}
         <div

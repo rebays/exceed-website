@@ -4,7 +4,9 @@ import { Reveal, buttonVariants } from "@/components/ui";
 
 export default function FinalCTA() {
   return (
-    <section id="contact" className="relative overflow-hidden py-40 md:py-56 border-t border-border">
+    // The glow is clipped sideways only, so its lower half spills into the footer
+    // and the two read as one continuous surface.
+    <section id="contact" className="relative overflow-x-clip py-40 md:py-56 border-t border-border">
       <div
         aria-hidden
         className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[1100px] h-[600px] rounded-full blur-[140px] opacity-40"
