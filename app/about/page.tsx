@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import FinalCTA from "@/components/sections/FinalCTA";
-import Founder from "@/components/sections/Founder";
+// Founder section hidden for now — restore this import and <Founder /> to bring it back.
+// import Founder from "@/components/sections/Founder";
 import { Stats } from "@/components/sections/Process";
 import { Container, PageHero, Reveal, Section, SectionHeading, TiltCard } from "@/components/ui";
 import { leaders } from "@/lib/content";
@@ -75,7 +76,7 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      <Founder />
+      {/* <Founder /> */}
       <FinalCTA />
     </>
   );
