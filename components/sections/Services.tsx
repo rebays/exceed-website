@@ -28,7 +28,7 @@ export default function Services() {
       <Container>
         <SectionHeading
           eyebrow="Services"
-          title="We build brands. Then we give them somewhere to live."
+          title="Build the brand. Then give it somewhere to live."
           lead="Six disciplines under one roof — so the logo, the sign and the software all speak the same language."
         />
 

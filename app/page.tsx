@@ -3,7 +3,8 @@ import Statement from "@/components/sections/Statement";
 import Services from "@/components/sections/Services";
 import Work from "@/components/sections/Work";
 import Process from "@/components/sections/Process";
-import Founder from "@/components/sections/Founder";
+// Founder section hidden for now — restore this import and <Founder /> to bring it back.
+// import Founder from "@/components/sections/Founder";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
 import FinalCTA from "@/components/sections/FinalCTA";
@@ -16,7 +17,7 @@ export default function Home() {
       <Services />
       <Work />
       <Process />
-      <Founder />
+      {/* <Founder /> */}
       <Pricing />
       <FAQ />
       <FinalCTA />
