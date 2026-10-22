@@ -3,7 +3,7 @@
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 
 const STATEMENT =
-  "We design it. We build it. We install it. One studio, from the first sketch to the final install — so nothing gets lost in between.";
+  "Design it. Build it. Install it. One studio, from the first sketch to the final install — so nothing gets lost in between.";
 
 /** Pinned manifesto whose words light up one by one as you scroll. */
 export default function Statement() {
